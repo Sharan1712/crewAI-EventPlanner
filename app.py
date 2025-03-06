@@ -72,11 +72,57 @@ with st.sidebar:
                 
                 Choose your preferred model and enter the required API keys to get started.""")
         
-if not os.environ.get("OPENAI_API_KEY"):
-    st.warning("⚠️ Please enter your OpenAI API key in the sidebar to get started")
-    st.stop()
+# if not os.environ.get("OPENAI_API_KEY"):
+#     st.warning("⚠️ Please enter your OpenAI API key in the sidebar to get started")
+#     st.stop()
 
-if not os.environ.get("SERPER_API_KEY"):
-    st.warning("⚠️ Please enter your Serper API key in the sidebar to get started")
-    st.stop()
+# if not os.environ.get("SERPER_API_KEY"):
+#     st.warning("⚠️ Please enter your Serper API key in the sidebar to get started")
+#     st.stop()
     
+# Create two columns for the input section
+input_col1, input_col2 = st.columns([2, 4])
+
+with input_col1:
+    event_topic = st.text_area(
+        "Event Topic",
+        height = 70,
+        placeholder = "Enter the main topic of the event..."                
+    )
+
+with input_col2:
+    event_desc = st.text_area(
+        "Event Description",
+        height = 70,
+        placeholder = "Enter a brief description of the event..."                
+    )
+    
+# Create columns for the input sections
+input_col1, input_col2,input_col3, input_col4 = st.columns([2, 2, 2, 2])
+
+with input_col1:
+    location = st.text_area(
+        "Location",
+        height = 70,
+        placeholder = "Enter the location where you want the event to take place..."                
+    )
+    
+with input_col2:
+    event_date = st.date_input(
+        "Event Date",
+        value = "today",
+        min_value = "today",
+        format = "DD.MM.YYYY"
+    )
+    
+with input_col3:
+    exp_participants = st.number_input(
+        "Expected Participants",
+        min_value = 10
+    )
+    
+with input_col4:
+    budget_usd = st.number_input(
+        "Approximate Budget in USD",
+        min_value = 500
+    )

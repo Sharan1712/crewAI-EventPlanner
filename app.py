@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from crewai import LLM
+from agents import * 
 
 # Streamlit Page Config
 st.set_page_config(
@@ -72,13 +73,13 @@ with st.sidebar:
                 
                 Choose your preferred model and enter the required API keys to get started.""")
         
-# if not os.environ.get("OPENAI_API_KEY"):
-#     st.warning("⚠️ Please enter your OpenAI API key in the sidebar to get started")
-#     st.stop()
+if not os.environ.get("OPENAI_API_KEY"):
+    st.warning("⚠️ Please enter your OpenAI API key in the sidebar to get started")
+    st.stop()
 
-# if not os.environ.get("SERPER_API_KEY"):
-#     st.warning("⚠️ Please enter your Serper API key in the sidebar to get started")
-#     st.stop()
+if not os.environ.get("SERPER_API_KEY"):
+    st.warning("⚠️ Please enter your Serper API key in the sidebar to get started")
+    st.stop()
     
 # Create two columns for the input section
 input_col1, input_col2 = st.columns([2, 4])
@@ -126,3 +127,43 @@ with input_col4:
         "Approximate Budget in USD",
         min_value = 500
     )
+    
+generate_button = st.button("🚀 Plan My Event", use_container_width = False, type = "primary")
+
+if generate_button:
+    with st.spinner("Generating content... This may take a moment."):
+        try:
+            event_details = {
+                'event_topic': event_topic,
+                'event_description': event_date,
+                'event_city': location,
+                'tentative_date': event_date,
+                'expected_participants': exp_participants,
+                'budget': budget_usd,
+            }
+            llm = LLM(model = f"openai/{selected_model}")
+            result = generate_content(llm, event_details)
+            
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
+            
+    st.markdown("### Event Venue")
+    st.markdown(str("results/venue_details.json"))
+    
+    st.markdown("### Marketing Plan")
+    st.markdown("results/marketing_report.md")
+            
+    # # Add download button
+    # st.download_button(
+    #     label = "Download Article",
+    #     data = result.raw,
+    #     file_name = f"{topic.lower().replace(' ', '_')}_article.md",
+    #     mime = "text/markdown"
+    #     )
+
+# Add footer
+st.divider()
+footer_col1, footer_col2, footer_col3 = st.columns([1, 2, 1])
+with footer_col2:
+    st.caption("Made with ❤️ using [CrewAI](https://crewai.com), [Serper](https://serper.dev/) and [Streamlit](https://streamlit.io)")
+    st.caption("By [Sharan Shyamsundar](http://sharan1712.github.io/)")
